@@ -1,18 +1,31 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useCart } from '../context/CartContext'
+import logo from '../assets/logo.png'
+import ImageSearch from './ImageSearch'
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const { user, isAuthenticated, logout } = useAuth();
   const { totalItems } = useCart();
+  const navigate = useNavigate();
+  
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/products?search=${encodeURIComponent(searchQuery.trim())}`);
+    }
+  };
 
   return (
     <nav className='bg-gray-800 text-white py-4 shadow-2xl'>
       <div className='container mx-auto px-4 flex justify-between items-center'>
-        <Link to='/' className='text-2xl font-bold'>ClickBasket</Link>
+        <Link to='/' className='flex items-center'>
+          <img src={logo} alt="ClickBasket Logo" className="h-16 w-auto object-contain my-0" />
+        </Link>
         
         {/* Desktop Navigation */}
         <div className='hidden md:flex space-x-8'>
@@ -21,9 +34,30 @@ const Navbar = () => {
           <Link to='/contact' className='hover:text-gray-300 transition duration-300'>Contact</Link>
         </div>
         
+        {/* Search Bar */}
+        <div className='hidden md:block flex-grow mx-4 max-w-md'>
+          <form onSubmit={handleSearch} className='flex'>
+            <input
+              type="text"
+              placeholder="Search products..."
+              className="w-full px-4 py-2 text-gray-800 rounded-l-md focus:outline-none"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+            <button 
+              type="submit"
+              className="bg-blue-600 hover:bg-blue-700 text-white px-4 rounded-r-md flex items-center justify-center"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </button>
+          </form>
+        </div>
 
         {/* Cart Icon and Auth */}
         <div className='hidden md:flex items-center space-x-6'>
+          <ImageSearch />
           <Link to='/cart' className='flex items-center space-x-1 hover:text-gray-300 transition duration-300 relative'>
             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
@@ -103,10 +137,34 @@ const Navbar = () => {
       {/* Mobile Menu */}
       {isMenuOpen && (
         <div className='md:hidden bg-gray-700 px-4 py-2'>
+          {/* Mobile Search Bar */}
+          <div className='py-2'>
+            <form onSubmit={handleSearch} className='flex'>
+              <input
+                type="text"
+                placeholder="Search products..."
+                className="w-full px-4 py-2 text-gray-800 rounded-l-md focus:outline-none"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+              <button 
+                type="submit"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-4 rounded-r-md flex items-center justify-center"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </button>
+            </form>
+          </div>
+          
           <div className='flex flex-col space-y-3'>
             <Link to='/' className='block py-2 hover:text-gray-300 transition duration-300'>Home</Link>
             <Link to='/products' className='block py-2 hover:text-gray-300 transition duration-300'>Products</Link>
             <Link to='/contact' className='block py-2 hover:text-gray-300 transition duration-300'>Contact</Link>
+            <div className='block py-2 hover:text-gray-300 transition duration-300'>
+              <ImageSearch />
+            </div>
             <Link to='/cart' className='block py-2 hover:text-gray-300 transition duration-300 flex items-center'>
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
