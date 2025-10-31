@@ -22,7 +22,7 @@ const App = () => {
       <CartProvider>
         <BrowserRouter>
           <Navbar/>
-          <div className="min-h-screen">
+          <div className="min-h-screen pt-20">
             <Routes>
               <Route path='/' element={<Home/>}></Route>
               <Route path='/products' element={<Products/>}></Route>
